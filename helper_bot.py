@@ -1,6 +1,7 @@
 import discord
 import requests
 from bs4 import BeautifulSoup
+import datetime
 
 client = discord.Client()
 
@@ -85,8 +86,12 @@ async def on_ready():
 async def on_message(message):
     if message.author != client.user:
         if message.content.lower() == 'time':
+            '''
             await client.send_message(message.channel,
                                       'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT (UTC -7): 5:00 PM on Friday \nEDT (UTC-7): 8:00 PM on Friday \n')
+            '''
+            # Prints the Time in format: (Tue, 16 October 2018 04:41:32 PM)
+            await client.send_message(message.channel, 'For tommy_troll who loves to troll really hard \nMaplestory 2 time is: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
         
         if message.content.lower() == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
