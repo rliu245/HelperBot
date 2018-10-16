@@ -1,11 +1,24 @@
-# washingtonshiao@gmail.com
 import discord
-import os
 import requests
 from bs4 import BeautifulSoup
 
 client = discord.Client()
 
+"""
+Description:
+    helper function for formatting the news obtained from Maplestory 2 into format
+        Title1:
+        Category1:
+        Time1:
+        Link of Website1:
+            
+        Title2:
+        Category2:
+        ...
+
+Parameters:
+    links - a list of tuples/lists with 4 indices
+"""
 def print_news(links):
     result = []
     for tuples in links:
@@ -58,12 +71,10 @@ async def on_message(message):
     if message.author != client.user:
         if message.content.lower() == 'time':
             await client.send_message(message.channel,
-                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \n PDT (UTC -7): 5:00 PM on Friday \n EDT (UTC-7): 8:00 PM on Friday \n')
+                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT (UTC -7): 5:00 PM on Friday \nEDT (UTC-7): 8:00 PM on Friday \n')
         
         if message.content.lower() == 'test':
             await client.send_message(message.channel, print_news(retrieve_news()))
 
-# token = os.environ.get("DISCORD_BOT_SECRET")
-# Client ID: 501445905296130068
-token = 'NTAxNDQ1OTA1Mjk2MTMwMDY4.DqZftg.n0Ro1QgBOR9QPCe9yUDbcazkBhw'
+token = open('token_key').readline().strip()
 client.run(token)
