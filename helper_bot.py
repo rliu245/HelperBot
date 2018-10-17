@@ -52,6 +52,8 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
     important_news = all_news.find_all('figure', attrs = {'class': 'news-item'})
 
     links = []
+    # Create a dict to hold all the patches. Keys are Time(String), Values are News_Titles(List)
+    all_patches = dict()
 
     for item in important_news:
         title = item.find('h2').text
@@ -75,6 +77,14 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
         link = 'maplestory2.nexon.net' + item.find('a', {'class': 'news-item-link', 'href': True})['href']
     
         links.append((title, category, time, link))
+        
+        if time in all_patches:
+            if title in all_patches[time]:
+                return
+            else:
+                all_patches[time].append(title)
+        else:
+            all_patches[time] = [title]
         
     return links
 
