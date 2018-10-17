@@ -2,8 +2,17 @@ import discord
 import requests
 from bs4 import BeautifulSoup
 import datetime
+import json
 
 client = discord.Client()
+
+def read_newsfile(filename):
+    with open(filename) as f_in:
+        return json.load(f_in)
+
+def write_newsfile(data, filename):
+    with open(filename, 'w') as f_out:
+        json.dump(data, f_out)
 
 """
 Description:
@@ -80,12 +89,13 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
         
         if time in all_patches:
             if title in all_patches[time]:
-                return
+                continue
             else:
                 all_patches[time].append(title)
         else:
             all_patches[time] = [title]
-        
+    
+    write_newsfile(all_patches, 'news_db.json')    
     return links
 
 @client.event
@@ -105,6 +115,7 @@ async def on_message(message):
         
         if message.content.lower() == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
+            print(type(read_newsfile('news_db.json')))
 
 token = open('token_key').readline().strip()
 client.run(token)
