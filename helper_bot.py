@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import json
+import time
 
 client = discord.Client()
 news_db = 0
@@ -63,7 +64,6 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
 
     links = []
     # Create a dict to hold all the patches. Keys are Time(String), Values are News_Titles(List)
-    all_patches = dict()
     change = False
 
     for item in important_news:
@@ -89,24 +89,25 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
     
         links.append((title, category, time, link))
         
-        if time in all_patches:
-            if title in all_patches[time]:
+        if time in news_db:
+            if title in news_db[time]:
                 continue
             else:
-                all_patches[time].append(title)
+                news_db[time].append(title)
                 change = True
         else:
-            all_patches[time] = [title]
+            news_db[time] = [title]
             change = True
     
     if change:
-        write_newsfile(all_patches, 'news_db.json')
+        write_newsfile(news_db, 'news_db.json')
         
     return links
 
 @client.event
 async def on_ready():
     print("{} is in".format(client.user))
+    await check_for_news()
 
 @client.event
 async def on_message(message):
@@ -121,8 +122,23 @@ async def on_message(message):
         
         if message.content.lower() == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
+ 
+async def check_for_news():
+    while(True):
+        if False:
+            await client.send_message(client.get_channel('501450681270534183'), print_news)
+            await client.send_message(client.get_channel('501450681270534183'), 'hello world')
+        else:
+            print('Waiting.....')
+            await client.send_message(client.get_channel('501450681270534183'), 'hello world')
+            time.sleep(60)               
 
 if __name__ == "__main__":
     token = open('token_key').readline().strip()
     news_db = read_newsfile('news_db.json')
     client.run(token)
+    print("running")
+    '''
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(check_for_news())
+    '''
