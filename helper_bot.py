@@ -3,7 +3,8 @@ import requests
 from bs4 import BeautifulSoup
 import datetime
 import json
-import time
+import _thread
+import asyncio
 
 client = discord.Client()
 news_db = 0
@@ -107,7 +108,14 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
 @client.event
 async def on_ready():
     print("{} is in".format(client.user))
-    await check_for_news()
+    
+    '''
+    try:
+        _thread.start_new_thread(check_for_news, ())
+    except Exception as e:
+        print("Error unable to start thread")
+        print(e)
+    '''
 
 @client.event
 async def on_message(message):
@@ -122,8 +130,10 @@ async def on_message(message):
         
         if message.content.lower() == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
- 
+
 async def check_for_news():
+    await client.wait_until_ready()
+    await client.send_message(client.get_channel('501450681270534183'), 'testing')
     while(True):
         if False:
             await client.send_message(client.get_channel('501450681270534183'), print_news)
@@ -131,11 +141,12 @@ async def check_for_news():
         else:
             print('Waiting.....')
             await client.send_message(client.get_channel('501450681270534183'), 'hello world')
-            time.sleep(60)               
+            asyncio.sleep(60)               
 
 if __name__ == "__main__":
     token = open('token_key').readline().strip()
     news_db = read_newsfile('news_db.json')
+    client.loop.create_task(check_for_news())
     client.run(token)
     print("running")
     '''
