@@ -5,6 +5,7 @@ import datetime
 import json
 
 client = discord.Client()
+news_db = 0
 
 def read_newsfile(filename):
     with open(filename) as f_in:
@@ -63,6 +64,7 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
     links = []
     # Create a dict to hold all the patches. Keys are Time(String), Values are News_Titles(List)
     all_patches = dict()
+    change = False
 
     for item in important_news:
         title = item.find('h2').text
@@ -92,10 +94,14 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
                 continue
             else:
                 all_patches[time].append(title)
+                change = True
         else:
             all_patches[time] = [title]
+            change = True
     
-    write_newsfile(all_patches, 'news_db.json')    
+    if change:
+        write_newsfile(all_patches, 'news_db.json')
+        
     return links
 
 @client.event
@@ -115,7 +121,8 @@ async def on_message(message):
         
         if message.content.lower() == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
-            print(type(read_newsfile('news_db.json')))
 
-token = open('token_key').readline().strip()
-client.run(token)
+if __name__ == "__main__":
+    token = open('token_key').readline().strip()
+    news_db = read_newsfile('news_db.json')
+    client.run(token)
