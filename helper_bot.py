@@ -10,7 +10,7 @@ Description:
     helper function for formatting the news obtained from Maplestory 2 into format
         Title1:
         Category1:
-        Time1:
+        Date1:
         Link of Website1:
             
         Title2:
@@ -26,7 +26,7 @@ Returns:
 def print_news(links):
     result = []
     for tuples in links:
-        result.append(' Title: {} \n Category: {} \n Time: {} \n Link: {} \n'.format(tuples[0], tuples[1], tuples[2], tuples[3]))
+        result.append(' Title: {} \n Category: {} \n Date: {} \n Link: {} \n'.format(tuples[0], tuples[1], tuples[2], tuples[3]))
     
     result_string = '\n'.join(result)
     return result_string
