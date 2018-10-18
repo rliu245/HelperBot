@@ -133,22 +133,22 @@ async def on_message(message):
 
 async def check_for_news():
     await client.wait_until_ready()
-    await client.send_message(client.get_channel('501450681270534183'), 'testing')
+    
     while(True):
-        if False:
+        if 5 > 10:
             await client.send_message(client.get_channel('501450681270534183'), print_news)
             await client.send_message(client.get_channel('501450681270534183'), 'hello world')
         else:
             print('Waiting.....')
             await client.send_message(client.get_channel('501450681270534183'), 'hello world')
-            asyncio.sleep(60)               
+            
+        await asyncio.sleep(60)               
 
 if __name__ == "__main__":
     token = open('token_key').readline().strip()
     news_db = read_newsfile('news_db.json')
     client.loop.create_task(check_for_news())
     client.run(token)
-    print("running")
     '''
     loop = asyncio.get_event_loop()
     loop.run_until_complete(check_for_news())
