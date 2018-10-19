@@ -113,6 +113,9 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
 async def on_ready():
     print("{} is in".format(client.user))
     
+    for server in client.servers:
+        print('Joined Server {}'.format(server))
+    
     '''
     try:
         _thread.start_new_thread(check_for_news, ())
@@ -129,10 +132,10 @@ async def on_message(message):
         if msg == 'time':
             '''
             await client.send_message(message.channel,
-                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT (UTC -7): 5:00 PM on Friday \nEDT (UTC-7): 8:00 PM on Friday \n')
+                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT(West Coast) (UTC -7): 5:00 PM on Friday \nEDT(East Coast) (UTC-7): 8:00 PM on Friday \n')
             '''
             # Prints the Time in format: (Tue, 16 October 2018 04:41:32 PM)
-            await client.send_message(message.channel, 'For tommy_troll who loves to troll really hard :smirk: :joy:\nMaplestory 2 time is currently: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
+            await client.send_message(message.channel, 'For Tommy_troll who is a super troll :smirk: :joy:\nMaplestory 2 time is currently: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
         
         elif msg == 'time reset':
             await client.send_message(message.channel, reset_timer())
