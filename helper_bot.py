@@ -17,6 +17,10 @@ def write_newsfile(data, filename):
     with open(filename, 'w') as f_out:
         json.dump(data, f_out)
 
+async def reset_timer():
+    now = datetime.datetime.now()
+    pass
+
 """
 Description:
     helper function for formatting the news obtained from Maplestory 2 into format
@@ -120,7 +124,9 @@ async def on_ready():
 @client.event
 async def on_message(message):
     if message.author != client.user:
-        if message.content.lower() == 'time':
+        # Create variable to hold the message so it's easier to create if/elif statements
+        msg = message.content.lower()
+        if msg == 'time':
             '''
             await client.send_message(message.channel,
                                       'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT (UTC -7): 5:00 PM on Friday \nEDT (UTC-7): 8:00 PM on Friday \n')
@@ -128,7 +134,10 @@ async def on_message(message):
             # Prints the Time in format: (Tue, 16 October 2018 04:41:32 PM)
             await client.send_message(message.channel, 'For tommy_troll who loves to troll really hard :smirk: :joy:\nMaplestory 2 time is currently: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
         
-        if message.content.lower() == 'news':
+        elif msg == 'time reset':
+            await client.send_message(message.channel, reset_timer())
+        
+        elif msg == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
 
 async def check_for_news():
