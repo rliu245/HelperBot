@@ -1,15 +1,32 @@
 import discord
 import requests
 from bs4 import BeautifulSoup
+import datetime
+import json
+import _thread
+import asyncio
 
 client = discord.Client()
+news_db = 0
+
+def read_newsfile(filename):
+    with open(filename) as f_in:
+        return json.load(f_in)
+
+def write_newsfile(data, filename):
+    with open(filename, 'w') as f_out:
+        json.dump(data, f_out)
+
+async def reset_timer():
+    now = datetime.datetime.now()
+    pass
 
 """
 Description:
     helper function for formatting the news obtained from Maplestory 2 into format
         Title1:
         Category1:
-        Time1:
+        Date1:
         Link of Website1:
             
         Title2:
@@ -25,7 +42,7 @@ Returns:
 def print_news(links):
     result = []
     for tuples in links:
-        result.append(' Title: {} \n Category: {} \n Time: {} \n Link: {} \n'.format(tuples[0], tuples[1], tuples[2], tuples[3]))
+        result.append(' Title: {} \n Category: {} \n Date: {} \n Link: {} \n'.format(tuples[0], tuples[1], tuples[2], tuples[3]))
     
     result_string = '\n'.join(result)
     return result_string
@@ -51,6 +68,8 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
     important_news = all_news.find_all('figure', attrs = {'class': 'news-item'})
 
     links = []
+    # Create a dict to hold all the patches. Keys are Time(String), Values are News_Titles(List)
+    change = False
 
     for item in important_news:
         title = item.find('h2').text
@@ -75,21 +94,74 @@ def retrieve_news(url = 'http://maplestory2.nexon.net/en/news'):
     
         links.append((title, category, time, link))
         
+        if time in news_db:
+            if title in news_db[time]:
+                continue
+            else:
+                news_db[time].append(title)
+                change = True
+        else:
+            news_db[time] = [title]
+            change = True
+    
+    if change:
+        write_newsfile(news_db, 'news_db.json')
+        
     return links
 
 @client.event
 async def on_ready():
     print("{} is in".format(client.user))
+    
+    for server in client.servers:
+        print('Joined Server {}'.format(server))
+    
+    '''
+    try:
+        _thread.start_new_thread(check_for_news, ())
+    except Exception as e:
+        print("Error unable to start thread")
+        print(e)
+    '''
 
 @client.event
 async def on_message(message):
     if message.author != client.user:
-        if message.content.lower() == 'time':
+        # Create variable to hold the message so it's easier to create if/elif statements
+        msg = message.content.lower()
+        if msg == 'time':
+            '''
             await client.send_message(message.channel,
-                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT (UTC -7): 5:00 PM on Friday \nEDT (UTC-7): 8:00 PM on Friday \n')
+                                      'This one is for tommy_troll :smirk:\n' + 'If event starts on Saturday Maple time, then for people in the US it starts at: \nPDT(West Coast) (UTC -7): 5:00 PM on Friday \nEDT(East Coast) (UTC-7): 8:00 PM on Friday \n')
+            '''
+            # Prints the Time in format: (Tue, 16 October 2018 04:41:32 PM)
+            await client.send_message(message.channel, 'For Tommy_troll who is a super troll :smirk: :joy:\nMaplestory 2 time is currently: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
         
-        if message.content.lower() == 'news':
+        elif msg == 'time reset':
+            await client.send_message(message.channel, reset_timer())
+        
+        elif msg == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
 
-token = open('token_key').readline().strip()
-client.run(token)
+async def check_for_news():
+    await client.wait_until_ready()
+    
+    while(True):
+        if 5 > 10:
+            await client.send_message(client.get_channel('501450681270534183'), print_news)
+            await client.send_message(client.get_channel('501450681270534183'), 'hello world')
+        else:
+            print('Waiting.....')
+            await client.send_message(client.get_channel('501450681270534183'), 'hello world')
+            
+        await asyncio.sleep(60)               
+
+if __name__ == "__main__":
+    token = open('token_key').readline().strip()
+    news_db = read_newsfile('news_db.json')
+    client.loop.create_task(check_for_news())
+    client.run(token)
+    '''
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(check_for_news())
+    '''
