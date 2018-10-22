@@ -9,10 +9,17 @@ import random
 
 client = discord.Client()
 news_db = 0
+currentevents_db = [('Halloween', 'Sept 20, 2018', 'November 1, 2018'), ('Christmas', 'December 14, 2018', 'December 30, 2018')]
+
+def read_currenteventsfile(filename):
+    pass
 
 def read_newsfile(filename):
     with open(filename) as f_in:
         return json.load(f_in)
+
+def write_currenteventsfile(filename):
+    pass
 
 def write_newsfile(data, filename):
     with open(filename, 'w') as f_out:
@@ -20,7 +27,7 @@ def write_newsfile(data, filename):
 
 async def reset_timer():
     now = datetime.datetime.now()
-    await 'Work in Progress'
+    return 'Work in Progress'
     pass
 
 # simulation of a mutex lock since only 1 person per wash
@@ -47,6 +54,13 @@ async def finish_laundry(author):
     msg = '{} has finished washing their clothes'.format(author.mention)
     print(msg)
     return msg
+
+def current_events():
+    result = []
+    for event in currentevents_db:
+        result.append('```css\n{} \nStarts: {} \nEnds: {}```'.format(event[0], event[1], event[2]))
+    
+    return '\n'.join(result)
 
 """
 Description:
@@ -227,10 +241,13 @@ async def on_message(message):
             await client.send_message(message.channel, 'For Tommy_troll who is a super troll :smirk: :joy:\nMaplestory 2 time is currently: {}'.format(datetime.datetime.utcnow().strftime('%a, %d %B %Y %I:%M:%S %p %z')))
  
         elif msg == 'time reset':
-            await client.send_message(message.channel, reset_timer())
+            await client.send_message(message.channel, await reset_timer())
 
         elif msg == 'news':
             await client.send_message(message.channel, print_news(retrieve_news('http://maplestory2.nexon.net/en/news')))
+            
+        elif msg == 'events':
+            await client.send_message(message.channel, current_events())
             
         elif msg == 'setlaundry':
             start = start_laundry(message.author)
