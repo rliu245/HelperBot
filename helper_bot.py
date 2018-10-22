@@ -9,7 +9,7 @@ import random
 
 client = discord.Client()
 news_db = 0
-currentevents_db = [('Halloween', 'Sept 20, 2018', 'November 1, 2018'), ('Christmas', 'December 14, 2018', 'December 30, 2018')]
+currentevents_db = {'Halloween': ['Sept 20, 2018', 'November 1, 2018'], 'Christmas': ['December 14, 2018', 'December 30, 2018']}
 
 def read_currenteventsfile(filename):
     pass
@@ -57,8 +57,8 @@ async def finish_laundry(author):
 
 def current_events():
     result = []
-    for event in currentevents_db:
-        result.append('```css\n{} \nStarts: {} \nEnds: {}```'.format(event[0], event[1], event[2]))
+    for event_name, date in currentevents_db.items():
+        result.append('```css\n{} \nStarts: {} \nEnds: {}```'.format(event_name, date[0], date[1]))
     
     return '\n'.join(result)
 
