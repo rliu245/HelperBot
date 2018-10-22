@@ -11,17 +11,11 @@ client = discord.Client()
 news_db = 0
 currentevents_db = {'Halloween': ['Sept 20, 2018', 'November 1, 2018'], 'Christmas': ['December 14, 2018', 'December 30, 2018']}
 
-def read_currenteventsfile(filename):
-    pass
-
-def read_newsfile(filename):
+def read_file(filename):
     with open(filename) as f_in:
         return json.load(f_in)
 
-def write_currenteventsfile(filename):
-    pass
-
-def write_newsfile(data, filename):
+def write_file(data, filename):
     with open(filename, 'w') as f_out:
         json.dump(data, f_out)
 
